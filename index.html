@@ -386,7 +386,7 @@
       el.dataset.text = original;
 
       let frame = 0;
-      const maxFrames = 10 + Math.floor(Math.random() * 6); // 10–15 frames
+      const maxFrames = 8 + Math.floor(Math.random() * 4); // 10–15 frames
 
       const timer = setInterval(() => {
         let out = "";
@@ -395,7 +395,7 @@
           if (ch === " " || ch === "\n") { out += ch; continue; }
 
           // slightly lower probability so it's more subtle
-          if (frame < maxFrames && Math.random() < 0.23) {
+          if (frame < maxFrames && Math.random() < 0.12) {
             out += mapCharSimilar(ch);
           } else {
             out += ch;
@@ -407,7 +407,7 @@
           el.textContent = original;
           clearInterval(timer);
         }
-      }, 50);
+      }, 70);
     }
 
     // Each element gets its own interval with a random delay
@@ -417,8 +417,8 @@
         glitchOnceForElement(el);
         setInterval(() => {
           glitchOnceForElement(el);
-        }, 2200 + Math.random() * 4200); // each 2.2–6.4s
-      }, Math.random() * 800);
+        }, 3000 + Math.random() * 5000); // each 2.2–6.4s
+      }, Math.random() * 1000);
     });
 
     // ========= SCROLL TO FORM =========
