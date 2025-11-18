@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -15,16 +16,62 @@
       display: flex;
       justify-content: center;
       padding: 40px 12px;
+      position: relative;
+      overflow-x: hidden;
     }
+
+    /* CRT scanlines */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.06) 0px,
+        rgba(255,255,255,0.06) 1px,
+        rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0) 4px
+      );
+      mix-blend-mode: soft-light;
+      opacity: 0.25;
+      z-index: 1;
+    }
+
+    /* Noise / static overlay */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle at 0 0, rgba(255,255,255,0.12) 0, transparent 50%),
+        radial-gradient(circle at 100% 0, rgba(255,255,255,0.08) 0, transparent 55%),
+        radial-gradient(circle at 0 100%, rgba(255,255,255,0.06) 0, transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(255,255,255,0.1) 0, transparent 60%);
+      opacity: 0.35;
+      mix-blend-mode: screen;
+      animation: noiseShift 5s infinite linear alternate;
+      z-index: 2;
+    }
+
+    @keyframes noiseShift {
+      from { transform: translate3d(0, 0, 0); }
+      to   { transform: translate3d(-12px, 8px, 0); }
+    }
+
     .frame {
       max-width: 420px;
       width: 100%;
       border: 1px solid #444;
-      padding: 24px 20px 28px;
+      padding: 24px 20px 18px;
       border-radius: 16px;
       background: radial-gradient(circle at top, #222 0, #000 60%);
       box-shadow: 0 0 30px rgba(255,255,255,0.12);
+      position: relative;
+      z-index: 3; /* above overlays */
     }
+
     .system-label {
       letter-spacing: 0.15em;
       font-size: 0.7rem;
@@ -32,6 +79,7 @@
       text-transform: uppercase;
       margin-bottom: 8px;
     }
+
     .hero-image {
       width: 100%;
       border-radius: 14px;
@@ -39,24 +87,29 @@
       border: 1px solid #444;
       overflow: hidden;
     }
+
     .hero-image img {
       width: 100%;
       display: block;
       animation: spin 18s linear infinite;
       transform-origin: center center;
     }
+
     @keyframes spin {
       from { transform: rotate(0deg) scale(1.05); }
       to   { transform: rotate(360deg) scale(1.05); }
     }
+
     h1 {
       font-size: 2.0rem;
       margin: 0 0 4px;
     }
+
     #glitch-title {
       position: relative;
       display: inline-block;
     }
+
     .subheader {
       font-size: 0.8rem;
       color: #ccc;
@@ -64,12 +117,14 @@
       text-transform: uppercase;
       margin-bottom: 12px;
     }
+
     .meta-block {
       margin-top: 12px;
       border-top: 1px solid #444;
       padding-top: 10px;
       font-size: 0.8rem;
     }
+
     .meta-label {
       font-weight: 600;
       color: #bbb;
@@ -78,27 +133,32 @@
       font-size: 0.7rem;
       margin-bottom: 4px;
     }
+
     .meta-value {
       font-size: 0.95rem;
       margin-bottom: 2px;
     }
+
     .meta-sub {
       font-size: 0.75rem;
       color: #888;
       font-style: italic;
     }
+
     .description {
       margin-top: 10px;
       font-size: 0.8rem;
       color: #ddd;
       line-height: 1.4;
     }
+
     .divider {
       border-top: 1px solid #333;
-      margin: 18px 0;
+      margin: 18px 0 10px;
     }
+
     .rsvp-btn {
-      margin-top: 16px;
+      margin-top: 14px;
       width: 100%;
       padding: 10px 0;
       border-radius: 10px;
@@ -112,11 +172,13 @@
       text-transform: uppercase;
       transition: box-shadow 0.2s, transform 0.1s, background 0.2s;
     }
+
     .rsvp-btn:hover {
       box-shadow: 0 0 18px rgba(255,255,255,0.65);
       transform: translateY(-1px);
       background: #111;
     }
+
     .badge-line {
       margin-top: 10px;
       font-size: 0.72rem;
@@ -125,13 +187,16 @@
       color: #aaa;
       text-align: center;
     }
+
     form {
       margin-top: 18px;
       font-size: 0.85rem;
     }
+
     .field {
       margin-bottom: 12px;
     }
+
     label {
       display: block;
       margin-bottom: 4px;
@@ -140,6 +205,7 @@
       font-size: 0.68rem;
       color: #bbb;
     }
+
     input {
       width: 100%;
       padding: 7px 9px;
@@ -150,6 +216,7 @@
       font-family: inherit;
       font-size: 0.85rem;
     }
+
     .submit-btn {
       margin-top: 10px;
       width: 100%;
@@ -163,16 +230,61 @@
       text-transform: uppercase;
       cursor: pointer;
     }
+
     .submit-btn:disabled {
       opacity: 0.6;
       cursor: default;
     }
+
     .status {
       margin-top: 8px;
       font-size: 0.75rem;
       text-align: center;
       color: #ccc;
       min-height: 1em;
+    }
+
+    /* Fake console / log at bottom */
+    .console {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid #333;
+      font-size: 0.7rem;
+      color: #9ad1ff;
+    }
+
+    .console-label {
+      color: #6aa6ff;
+      margin-bottom: 4px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .console-line {
+      font-family: inherit;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      opacity: 0.9;
+    }
+
+    .console-line.dim {
+      opacity: 0.6;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 0.55ch;
+      height: 1em;
+      background: #9ad1ff;
+      margin-left: 3px;
+      vertical-align: -0.1em;
+      animation: blink 1s steps(1, end) infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      50.01%, 100% { opacity: 0; }
     }
   </style>
 </head>
@@ -197,7 +309,7 @@
       <div class="meta-value glitchy" data-text="Friday, December 6th, 2025">
         Friday, December 6th, 2025
       </div>
-      <div class="meta-value glitchy" data-text="18:00_HRS (arrive promptly)">
+      <div class="meta-value glitchy" data-text="18:30_HRS (please arrive promptly)">
         18:00_HRS (arrive promptly)
       </div>
       <div class="meta-sub glitchy" data-text="Special game begins right at 6:30pm.">
@@ -215,9 +327,9 @@
       </div>
     </div>
 
-    <div class="description glitchy" data-text="A cocktail party inspired socialization show featuring an evening of live music, mysteries, and crossed signals.">
-      A <strong>cocktail party</strong> inspired socialization show
-      featuring an evening of live music, mysteries, and crossed signals.
+    <div class="description glitchy" data-text="A cocktail party inspired socialization show featuring an evening of live music, mysteries, and crossed wires.">
+      A <strong>cocktail party</strong> inspired socialization show 
+      featuring an evening of live music, mysteries, and crossed wires.
     </div>
 
     <button class="rsvp-btn" id="scroll-rsvp">
@@ -247,6 +359,21 @@
       <button type="submit" class="submit-btn">Submit RSVP</button>
       <div class="status" id="status"></div>
     </form>
+
+    <div class="console">
+      <div class="console-label glitchy" data-text="postcrypt://crossed-wires">
+        postcrypt://crossed-wires
+      </div>
+      <div class="console-line dim glitchy" data-text="> initializing signal matrix...">
+        &gt; initializing signal matrix...
+      </div>
+      <div class="console-line dim glitchy" data-text="> locating Guastavino node... OK">
+        &gt; locating Guastavino node... OK
+      </div>
+      <div class="console-line glitchy" data-text="> awaiting inbound connections at 18:30_HRS">
+        &gt; awaiting inbound connections at 18:30_HRS<span class="cursor"></span>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -259,28 +386,29 @@
       "a": "α", "c": "ϲ", "e": "ε", "i": "ι", "o": "σ", "u": "υ", "s": "ς",
       "t": "τ", "n": "η", "r": "г", "p": "ρ"
     };
-    
+
     function mapCharSimilar(ch) {
       if (SIM_MAP[ch]) return SIM_MAP[ch];
       if (SIM_MAP[ch.toUpperCase()]) return SIM_MAP[ch.toUpperCase()];
       return ch;
     }
-    
+
     function glitchOnceForElement(el) {
       const original = el.dataset.text || el.textContent;
       if (!original) return;
       el.dataset.text = original;
-    
+
       let frame = 0;
-      const maxFrames = 10;
-    
+      const maxFrames = 10 + Math.floor(Math.random() * 6); // 10–15 frames
+
       const timer = setInterval(() => {
         let out = "";
         for (let i = 0; i < original.length; i++) {
           const ch = original[i];
           if (ch === " " || ch === "\n") { out += ch; continue; }
-    
-          if (frame < maxFrames && Math.random() < 0.25) {
+
+          // slightly lower probability so it's more subtle
+          if (frame < maxFrames && Math.random() < 0.23) {
             out += mapCharSimilar(ch);
           } else {
             out += ch;
@@ -294,16 +422,27 @@
         }
       }, 50);
     }
-    
-    // Each element gets its own interval with a random delay for chaos
+
+    // Each element gets its own interval with a random delay
     document.querySelectorAll(".glitchy").forEach((el) => {
-      setInterval(() => {
+      // initial small delay so they don't all fire right at load
+      setTimeout(() => {
         glitchOnceForElement(el);
-      }, 2000 + Math.random() * 4000); // each between 2–6 seconds
+        setInterval(() => {
+          glitchOnceForElement(el);
+        }, 2200 + Math.random() * 4200); // each 2.2–6.4s
+      }, Math.random() * 800);
+    });
+
+    // ========= SCROLL TO FORM =========
+    document.getElementById("scroll-rsvp").addEventListener("click", () => {
+      document
+        .getElementById("rsvp-form")
+        .scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
     // ========= RSVP FORM SUBMIT =========
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfU0sEmNeUn8THiuWtbeaHYaoej3X_M4EVurDR8Pg7m-6TsS09QCq7jaG1OjShspWG/exec"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfU0sEmNeUn8THiuWtbeaHYaoej3X_M4EVurDR8Pg7m-6TsS09QCq7jaG1OjShspWG/exec";
     const form = document.getElementById("rsvp-form");
     const statusEl = document.getElementById("status");
     const submitBtn = form.querySelector(".submit-btn");
@@ -323,7 +462,7 @@
         const data = await res.json();
 
         if (data.status === "success") {
-          statusEl.textContent = "RSVP received. See you at 18:30 sharp.";
+          statusEl.textContent = "RSVP received. See you at 18:00 sharp.";
           form.reset();
         } else {
           statusEl.textContent = "Glitch detected. Try again.";
