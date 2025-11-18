@@ -250,7 +250,7 @@
   </div>
 
   <script>
-    // ========= GLITCHING TEXT (multiple elements) =========
+    // ========= GLITCHING TEXT (each element glitches independently) =========
     const SIM_MAP = {
       "A": "Δ", "B": "β", "C": "Ϲ", "D": "Ð", "E": "Ξ", "F": "Ғ", "G": "ɢ",
       "H": "Η", "I": "Ι", "J": "ʆ", "K": "Κ", "L": "∟", "M": "Μ", "N": "Η",
@@ -259,32 +259,28 @@
       "a": "α", "c": "ϲ", "e": "ε", "i": "ι", "o": "σ", "u": "υ", "s": "ς",
       "t": "τ", "n": "η", "r": "г", "p": "ρ"
     };
-
+    
     function mapCharSimilar(ch) {
       if (SIM_MAP[ch]) return SIM_MAP[ch];
       if (SIM_MAP[ch.toUpperCase()]) return SIM_MAP[ch.toUpperCase()];
       return ch;
     }
-
+    
     function glitchOnceForElement(el) {
       const original = el.dataset.text || el.textContent;
       if (!original) return;
-      el.dataset.text = original; // ensure it's stored
-
+      el.dataset.text = original;
+    
       let frame = 0;
-      const maxFrames = 14;
-
+      const maxFrames = 10;
+    
       const timer = setInterval(() => {
         let out = "";
         for (let i = 0; i < original.length; i++) {
           const ch = original[i];
-          if (ch === " " || ch === "\n") {
-            out += ch;
-            continue;
-          }
-
-          // during glitch, ~40% of characters become similar symbols
-          if (frame < maxFrames && Math.random() < 0.4) {
+          if (ch === " " || ch === "\n") { out += ch; continue; }
+    
+          if (frame < maxFrames && Math.random() < 0.25) {
             out += mapCharSimilar(ch);
           } else {
             out += ch;
@@ -293,28 +289,17 @@
         el.textContent = out;
         frame++;
         if (frame >= maxFrames) {
-          el.textContent = original; // restore clean text
+          el.textContent = original;
           clearInterval(timer);
         }
-      }, 60);
+      }, 50);
     }
-
-    const glitchTargets = Array.from(document.querySelectorAll(".glitchy"));
-
-    function triggerGlitchWave() {
-      // glitch all targets in a subtle stagger
-      glitchTargets.forEach((el, idx) => {
-        setTimeout(() => glitchOnceForElement(el), idx * 40);
-      });
-    }
-
-    // initial + repeated waves
-    triggerGlitchWave();
-    setInterval(triggerGlitchWave, 4500);
-
-    // scroll to form when button clicked
-    document.getElementById("scroll-rsvp").addEventListener("click", () => {
-      document.getElementById("rsvp-form").scrollIntoView({ behavior: "smooth", block: "start" });
+    
+    // Each element gets its own interval with a random delay for chaos
+    document.querySelectorAll(".glitchy").forEach((el) => {
+      setInterval(() => {
+        glitchOnceForElement(el);
+      }, 2000 + Math.random() * 4000); // each between 2–6 seconds
     });
 
     // ========= RSVP FORM SUBMIT =========
