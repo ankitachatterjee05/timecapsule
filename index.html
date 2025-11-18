@@ -200,6 +200,26 @@
       margin-bottom: 12px;
     }
 
+    .map-wrapper {
+      width: 100%;
+      height: 260px;      /* adjust banner height */
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid #333;
+      margin-top: 8px;
+      position: relative;
+    }
+    
+    .map-wrapper img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: auto;
+      height: 130%;       /* zoom level */
+      transform: translate(-50%, -50%);
+    }
+
+
     label {
       display: block;
       margin-bottom: 4px;
@@ -315,23 +335,23 @@
       <div class="meta-value glitchy" data-text="18:00_HRS (arrive promptly)">
         18:00_HRS (arrive promptly)
       </div>
-      <div class="meta-sub glitchy" data-text="The games begin right at precisely 6:30pm.">
+      <div class="meta-sub glitchy" data-text="The games begin at precisely 6:30pm.">
         The games begin at precisely 6:30pm.
       </div>
     </div>
 
     <div class="meta-block">
       <div class="meta-label glitchy" data-text="LOCATION">LOCATION</div>
-      <div class="meta-value glitchy" data-text="St. Paul’s Chapel — Guastavino Room">
+      <div class="meta-value glitchy" data-text="St. Paul’s Chapel — The Guastavino Room">
         St. Paul’s Chapel — The Guastavino Room
       </div>
-      <div class="meta-sub glitchy" data-text="A hidden Postcrypt site, reactivated for the first time since 2018.">
-        A hidden Postcrypt site, reactivated for the first time since 2018.
+      <div class="meta-sub glitchy" data-text="A hidden Postcrypt site, hasn't been open in nearly a decade.">
+        A hidden Postcrypt site, hasn't been open in nearly a decade.
       </div>
     </div>
 
-    <div class="description glitchy" data-text="A cocktail party inspired socialization show featuring an evening of live music, mysteries, and crossed wires.">
-      A <strong>cocktail party</strong> inspired socialization show 
+    <div class="description glitchy" data-text="A cocktail party featuring an evening of live music, mysteries, and crossed wires.">
+      A <strong>cocktail party</strong> 
       featuring an evening of live music, mysteries, and crossed wires.
     </div>
 
@@ -346,9 +366,10 @@
     <div class="divider"></div>
 
     <!-- MAP SECTION (shown first) -->
-    <div id="map-wrapper">
-      <img src="map.png" alt="Map to the Crypt" class="map-image" />
+    <div id="map-wrapper" class="map-wrapper">
+      <img src="map.png" alt="Map to the Crypt" />
     </div>
+
     
     <!-- FORM SECTION (hidden until RSVP button is clicked) -->
     <div id="form-wrapper" style="display: none;">
