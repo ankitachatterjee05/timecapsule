@@ -16,7 +16,7 @@
       min-height: 100vh;
       font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       background: #000;
-      color: #f5f5f5;
+      color: #E76965;
       display: flex;
       justify-content: center;
       padding: 40px 12px;
@@ -416,26 +416,8 @@
       return ch;
     }
     
-    const BASE_COLORS = ["#6117A5", "#001E94", "#FFD400", "#708238"]; 
     const GLITCH_COLORS = BASE_COLORS; // same palette for glitch
     
-    function wrapLetters(el) {
-      const original = el.dataset.text || el.textContent;
-      el.dataset.text = original;
-    
-      let html = "";
-      for (let ch of original) {
-        if (ch === " ") { html += " "; continue; }
-        if (ch === "\n") { html += "<br>"; continue; }
-    
-        const baseColor = BASE_COLORS[Math.floor(Math.random() * BASE_COLORS.length)];
-        html += `<span class="glitch-letter" data-base="${baseColor}" style="color:${baseColor}">${ch}</span>`;
-      }
-      el.innerHTML = html;
-    }
-    
-    document.querySelectorAll(".glitchy").forEach(wrapLetters);
-
     function escapeHTML(str) {
       return str
         .replace(/&/g, "&amp;")
@@ -446,34 +428,43 @@
     }
     
     function glitchOnceForElement(el) {
-      const original = el.dataset.text;
-      const spans = el.querySelectorAll(".glitch-letter");
-      if (!original || spans.length === 0) return;
+      const original = el.dataset.text || el.textContent;
+      if (!original) return;
+      el.dataset.text = original;
     
       let frame = 0;
       const maxFrames = 8 + Math.floor(Math.random() * 4);
     
       const timer = setInterval(() => {
+        let outHTML = "";
     
-        spans.forEach((span, i) => {
+        for (let i = 0; i < original.length; i++) {
           const ch = original[i];
     
-          const shouldGlitch = frame < maxFrames && Math.random() < 0.12;
+          // Preserve spaces/newlines without spans
+          if (ch === " ") { outHTML += " "; continue; }
+          if (ch === "\n") { outHTML += "<br>"; continue; }
     
-          if (shouldGlitch) {
+          const doGlitch = frame < maxFrames && Math.random() < 0.12;
+    
+          if (doGlitch) {
             const glitchedChar = mapCharSimilar(ch);
             const color = GLITCH_COLORS[Math.floor(Math.random() * GLITCH_COLORS.length)];
-            span.textContent = glitchedChar;
-            span.style.color = color;
+    
+            outHTML += `<span style="color:${color}">${escapeHTML(glitchedChar)}</span>`;
           } else {
-            span.textContent = ch;
-            span.style.color = span.dataset.base;
+            // normal character, normal color
+            outHTML += `<span>${escapeHTML(ch)}</span>`;
           }
-        });
+        }
     
+        el.innerHTML = outHTML;
         frame++;
-        if (frame >= maxFrames) clearInterval(timer);
     
+        if (frame >= maxFrames) {
+          el.textContent = original;  // restore clean text
+          clearInterval(timer);
+        }
       }, 70);
     }
     
