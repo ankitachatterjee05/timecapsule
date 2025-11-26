@@ -406,7 +406,7 @@
       el.dataset.text = original;
     
       let frame = 0;
-      const maxFrames = 8 + Math.floor(Math.random() * 4);
+      const maxFrames = 14 + Math.floor(Math.random() * 6);
     
       const timer = setInterval(() => {
         let outHTML = "";
@@ -449,7 +449,7 @@
         glitchOnceForElement(el);
         setInterval(() => {
           glitchOnceForElement(el);
-        }, 3000 + Math.random() * 4500); // each 2.2–6.4s
+        }, 2000 + Math.random() * 3000); // each 2.2–6.4s
       }, Math.random() * 500);
     });
 
