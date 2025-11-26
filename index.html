@@ -33,9 +33,9 @@
       max-width: 420px;
       width: 100%;
       padding: 24px 20px 18px;
-      border: none;              /* no outline */
-      border-radius: 0;          /* or keep 16px if you like the roundness */
-      background: #000;          /* fully black card */
+      border: none;              
+      border-radius: 0;          
+      background: #000;          
       box-shadow: none;          /* remove glow */
       position: relative;
       z-index: 3;
@@ -406,7 +406,7 @@
       el.dataset.text = original;
     
       let frame = 0;
-      const maxFrames = 8 + Math.floor(Math.random() * 4);
+      const maxFrames = 6 + Math.floor(Math.random() * 4);
     
       const timer = setInterval(() => {
         let outHTML = "";
@@ -445,13 +445,12 @@
 
     // Each element gets its own interval with a random delay
     document.querySelectorAll(".glitchy").forEach((el) => {
-      // initial small delay so they don't all fire right at load
       setTimeout(() => {
         glitchOnceForElement(el);
         setInterval(() => {
           glitchOnceForElement(el);
-        }, 2850 + Math.random() * 4000); // each 2.2–6.4s
-      }, Math.random() * 500);
+        }, 3000 + Math.random() * 4000); // each 2.2–6.4s
+      }, Math.random() * 300);
     });
 
     // ========= REVEAL FORM ON RSVP BUTTON =========
